@@ -15,9 +15,10 @@ CRYPT_LIB =    -lcrypt
 # tree with your OpenSSL installation - depending on how you installed it,
 # it may be in /usr/local instead of /usr/local/ssl.
 #SSL_TREE =	/usr/local/ssl
-#SSL_DEFS =	-DUSE_SSL
+SSL_DEFS =	-DUSE_SSL
 #SSL_INC =	-I$(SSL_TREE)/include
 #SSL_LIBS =	-L$(SSL_TREE)/lib -lssl -lcrypto
+SSL_LIBS =	-lssl -lcrypto
 
 
 BINDIR =	/usr/local/sbin
@@ -28,10 +29,10 @@ CFLAGS =	-O $(CDEFS) -ansi -pedantic -U__STRICT_ANSI__ -Wall -Wpointer-arith -Ws
 LDFLAGS =	-s
 LDLIBS =	$(CRYPT_LIB) $(SSL_LIBS) $(SYSV_LIBS)
 
-all:		mini_httpd htpasswd
+all:		lighttpd htpasswd
 
-mini_httpd:	mini_httpd.o match.o tdate_parse.o
-	$(CC) $(LDFLAGS) mini_httpd.o match.o tdate_parse.o $(LDLIBS) -o mini_httpd
+lighttpd:	mini_httpd.o match.o tdate_parse.o
+	$(CC) $(LDFLAGS) mini_httpd.o match.o tdate_parse.o $(LDLIBS) -o lighttpd
 
 mini_httpd.o:	mini_httpd.c version.h port.h match.h tdate_parse.h mime_encodings.h mime_types.h
 	$(CC) $(CFLAGS) -c mini_httpd.c

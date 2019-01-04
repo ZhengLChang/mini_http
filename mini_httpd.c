@@ -142,9 +142,6 @@ typedef long long int64_t;
 #ifndef CGI_LD_LIBRARY_PATH
 #define CGI_LD_LIBRARY_PATH "/usr/local/lib:/usr/lib"
 #endif /* CGI_LD_LIBRARY_PATH */
-#ifndef AUTH_FILE
-#define AUTH_FILE ".htpasswd"
-#endif /* AUTH_FILE */
 #ifndef READ_TIMEOUT
 #define READ_TIMEOUT 60
 #endif /* READ_TIMEOUT */
@@ -201,14 +198,15 @@ static int max_age;
 static FILE* logfp;
 static int listen4_fd, listen6_fd;
 static int do_ssl;
-#ifdef USE_SSL
+
 static char* certfile;
 static char* cipher;
+#ifdef USE_SSL
 static SSL_CTX* ssl_ctx;
 #endif /* USE_SSL */
 static char cwd[MAXPATHLEN];
 static int got_hup;
-
+static char *passwd_file;
 
 /* Request variables. */
 static int conn_fd;
@@ -1009,12 +1007,17 @@ read_config( char* filename )
 		value_required( name, value );
 		p3p = e_strdup( value );
 		}
+	    else if ( strcasecmp( name, "passwd_file" ) == 0 )
+		{
+		value_required( name, value );
+		passwd_file = e_strdup( value );
+		}
 	    else if ( strcasecmp( name, "max_age" ) == 0 )
 		{
 		value_required( name, value );
 		max_age = atoi( value );
 		}
-#ifdef USE_SSL
+
 	    else if ( strcasecmp( name, "ssl" ) == 0 )
 		{
 		no_value_required( name, value );
@@ -1030,7 +1033,6 @@ read_config( char* filename )
 		value_required( name, value );
 		cipher = e_strdup( value );
 		}
-#endif /* USE_SSL */
 	    else
 		{
 		(void) fprintf(
@@ -1147,8 +1149,7 @@ handle_request( void )
     char* cp;
     int r, file_len, i;
     const char* index_names[] = {
-	"index.html", "index.htm", "index.xhtml", "index.xht", "Default.htm",
-	"index.cgi" };
+	      "/cgi-bin/index.cgi", "index.html"};
 
     /* Set up the timeout for reading. */
 #ifdef HAVE_SIGSET
@@ -1558,6 +1559,7 @@ do_file( void )
     auth_check( buf );
 
     /* Check if the filename is the AUTH_FILE itself - that's verboten. */
+#if 0
     if ( strcmp( file, AUTH_FILE ) == 0 ||
 	 ( strcmp( &(file[strlen(file) - sizeof(AUTH_FILE) + 1]), AUTH_FILE ) == 0 &&
 	   file[strlen(file) - sizeof(AUTH_FILE)] == '/' ) )
@@ -1567,7 +1569,7 @@ do_file( void )
 	    ntoa( &client_addr ), path );
 	send_error( 403, "Forbidden", "", "File is protected." );
 	}
-
+#endif
     /* Referrer check. */
     check_referrer();
 
@@ -2341,11 +2343,18 @@ auth_check( char* dirname )
     char* cryp;
 
     /* Construct auth filename. */
+#if 0
     if ( dirname[strlen(dirname) - 1] == '/' )
 	(void) snprintf( authpath, sizeof(authpath), "%s%s", dirname, AUTH_FILE );
     else
 	(void) snprintf( authpath, sizeof(authpath), "%s/%s", dirname, AUTH_FILE );
-
+#endif
+    if(passwd_file == NULL ||
+    		passwd_file[0] == '\0')
+    {
+    	return;
+    }
+	(void) snprintf( authpath, sizeof(authpath), "%s", passwd_file );
     /* Does this directory have an auth file? */
     if ( stat( authpath, &sb2 ) < 0 )
 	/* Nope, let the request go through. */
