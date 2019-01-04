@@ -1,6 +1,6 @@
 /* mini_httpd - small HTTP server
 **
-** Copyright © 1999,2000 by Jef Poskanzer <jef@mail.acme.com>.
+** Copyright ï¿½ 1999,2000 by Jef Poskanzer <jef@mail.acme.com>.
 ** All rights reserved.
 **
 ** Redistribution and use in source and binary forms, with or without
@@ -366,7 +366,7 @@ main( int argc, char** argv )
 	    (void) printf( "%s\n", SERVER_SOFTWARE );
 	    exit( 0 );
 	    }
-	else if ( strcmp( argv[argn], "-C" ) == 0 && argn + 1 < argc )
+	else if ( strcmp( argv[argn], "-f" ) == 0 && argn + 1 < argc )
 	    {
 	    ++argn;
 	    read_config( argv[argn] );
@@ -873,9 +873,9 @@ static void
 usage( void )
     {
 #ifdef USE_SSL
-    (void) fprintf( stderr, "usage:  %s [-C configfile] [-D] [-S] [-E certfile] [-Y cipher] [-p port] [-d dir] [-dd data_dir] [-c cgipat] [-u user] [-h hostname] [-r] [-v] [-l logfile] [-i pidfile] [-T charset] [-P P3P] [-M maxage]\n", argv0 );
+    (void) fprintf( stderr, "usage:  %s [-f configfile] [-D] [-S] [-E certfile] [-Y cipher] [-p port] [-d dir] [-dd data_dir] [-c cgipat] [-u user] [-h hostname] [-r] [-v] [-l logfile] [-i pidfile] [-T charset] [-P P3P] [-M maxage]\n", argv0 );
 #else /* USE_SSL */
-    (void) fprintf( stderr, "usage:  %s [-C configfile] [-D] [-p port] [-d dir] [-dd data_dir] [-c cgipat] [-u user] [-h hostname] [-r] [-v] [-l logfile] [-i pidfile] [-T charset] [-P P3P] [-M maxage]\n", argv0 );
+    (void) fprintf( stderr, "usage:  %s [-f configfile] [-D] [-p port] [-d dir] [-dd data_dir] [-c cgipat] [-u user] [-h hostname] [-r] [-v] [-l logfile] [-i pidfile] [-T charset] [-P P3P] [-M maxage]\n", argv0 );
 #endif /* USE_SSL */
     exit( 1 );
     }
