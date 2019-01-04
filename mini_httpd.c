@@ -2403,6 +2403,17 @@ auth_check( char* dirname )
 	    /* Yes. */
 	    (void) fclose( fp );
 	    /* So is the password right? */
+	    if ( strcmp( authpass, cryp) == 0 )
+		{
+		/* Ok! */
+		remoteuser = line;
+		return;
+		}
+	    else
+		/* No. */
+		send_authenticate( dirname );
+
+#if 0
 	    if ( strcmp( crypt( authpass, cryp ), cryp ) == 0 )
 		{
 		/* Ok! */
@@ -2412,6 +2423,7 @@ auth_check( char* dirname )
 	    else
 		/* No. */
 		send_authenticate( dirname );
+#endif
 	    }
 	}
 
