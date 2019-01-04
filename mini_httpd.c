@@ -1391,8 +1391,9 @@ handle_request( void )
 	    }
 
 	/* Nope, no index file, so it's an actual directory request. */
+#if 0
 	do_dir();
-
+#endif
 	got_one: ;
 	}
 
@@ -2057,7 +2058,7 @@ cgi_interpose_output( int rfd, int parse_headers )
 	/* If we're not parsing headers, write out the default status line
 	** and proceed to the echo phase.
 	*/
-	char http_head[] = "HTTP/1.0 200 OK\015\012";
+	char http_head[] = "HTTP/1.1 200 OK\015\012";
 	(void) my_write( http_head, sizeof(http_head) );
 	}
     else
@@ -2136,7 +2137,7 @@ cgi_interpose_output( int rfd, int parse_headers )
 	    default: title = "Something"; break;
 	    }
 	(void) snprintf(
-	    buf, sizeof(buf), "HTTP/1.0 %d %s\015\012", s, title );
+	    buf, sizeof(buf), "HTTP/1.1 %d %s\015\012", s, title );
 	(void) my_write( buf, strlen( buf ) );
 
 	/* Write the saved headers. */
@@ -2252,7 +2253,7 @@ make_envp( void )
     if ( cp != (char*) 0 )
 	envp[envn++] = build_env( "SERVER_NAME=%s", cp );
     envp[envn++] = "GATEWAY_INTERFACE=CGI/1.1";
-    envp[envn++] = "SERVER_PROTOCOL=HTTP/1.0";
+    envp[envn++] = "SERVER_PROTOCOL=HTTP/1.1";
     (void) snprintf( buf, sizeof(buf), "%d", (int) port );
     envp[envn++] = build_env( "SERVER_PORT=%s", buf );
     envp[envn++] = build_env(
