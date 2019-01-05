@@ -2260,7 +2260,9 @@ make_envp( void )
       envp[envn++] = build_env( "DBUS_SESSION_BUS_ADDRESS=%s", s );
     }
 
-//    envp[envn++] = build_env( "LD_LIBRARY_PATH=%s", CGI_LD_LIBRARY_PATH );
+/*    envp[envn++] = build_env( "LD_LIBRARY_PATH=%s", CGI_LD_LIBRARY_PATH );
+ *
+ */
     envp[envn++] = build_env( "SERVER_SOFTWARE=%s", SERVER_SOFTWARE );
     if ( vhost && req_hostname != (char*) 0 && req_hostname[0] != '\0' )
 	cp = req_hostname;	/* already computed by virtual_file() */
