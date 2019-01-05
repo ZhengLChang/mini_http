@@ -2241,10 +2241,26 @@ make_envp( void )
     int envn;
     char* cp;
     char buf[256];
+    const char *s = NULL;
 
     envn = 0;
     envp[envn++] = build_env( "PATH=%s", CGI_PATH );
-    envp[envn++] = build_env( "LD_LIBRARY_PATH=%s", CGI_LD_LIBRARY_PATH );
+    if (NULL != (s = getenv("LD_PRELOAD"))) {
+      envp[envn++] = build_env( "LD_PRELOAD=%s", s );
+    }
+    if (NULL != (s = getenv("LD_LIBRARY_PATH"))) {
+      envp[envn++] = build_env( "LD_LIBRARY_PATH=%s", s );
+    }else {
+      envp[envn++] = build_env( "LD_LIBRARY_PATH=%s", CGI_LD_LIBRARY_PATH );
+    }
+    if (NULL != (s = getenv("ModelName"))) {
+      envp[envn++] = build_env( "ModelName=%s", s );
+    }
+    if (NULL != (s = getenv("DBUS_SESSION_BUS_ADDRESS"))) {
+      envp[envn++] = build_env( "DBUS_SESSION_BUS_ADDRESS=%s", s );
+    }
+
+//    envp[envn++] = build_env( "LD_LIBRARY_PATH=%s", CGI_LD_LIBRARY_PATH );
     envp[envn++] = build_env( "SERVER_SOFTWARE=%s", SERVER_SOFTWARE );
     if ( vhost && req_hostname != (char*) 0 && req_hostname[0] != '\0' )
 	cp = req_hostname;	/* already computed by virtual_file() */
